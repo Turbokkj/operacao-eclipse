@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Gera as texturas (albedo, 128x128, tileáveis) do jogo por síntese procedural — originais.
-Saída: assets/textures/*.tex (arquivos PNG com extensão .tex: o jogo carrega via Image.load_png_from_buffer,
+Saída: assets/textures/*.bin (arquivos PNG com extensão .bin: o jogo carrega via Image.load_png_from_buffer,
 sem depender do pipeline de importação do editor). Requer: python3 + numpy + Pillow.
 Uso: python3 tools/gen_textures.py"""
 import io
@@ -44,7 +44,7 @@ def save(name, arr):
     buf = io.BytesIO()
     Image.fromarray(arr, "RGB").save(buf, format="PNG", optimize=True)
     os.makedirs(OUT, exist_ok=True)
-    with open(os.path.join(OUT, name + ".tex"), "wb") as f:
+    with open(os.path.join(OUT, name + ".bin"), "wb") as f:
         f.write(buf.getvalue())
     print("%-10s %6d bytes" % (name, len(buf.getvalue())))
 
