@@ -117,7 +117,7 @@ static func _q(x: float, y: float = 0.0, z: float = 0.0) -> Quaternion:
 	return Quaternion.from_euler(Vector3(deg_to_rad(x), deg_to_rad(y), deg_to_rad(z)))
 
 
-func _set(bone: int, q: Quaternion) -> void:
+func _set_bone_pose(bone: int, q: Quaternion) -> void:
 	sk.set_bone_pose_rotation(bone, q)
 
 
@@ -187,9 +187,9 @@ func update(dt: float) -> void:
 		hp = lerpf(hp, 8.0 * (1.0 if side == 0 else -0.5), _death)
 		kn = lerpf(kn, 25.0, _death)
 		var iu: int = B.ULEG_L if side == 0 else B.ULEG_R
-		_set(iu, _q(hp, 0.0, hr))
-		_set(iu + 1, _q(-kn))
-		_set(iu + 2, _q(0.6 * (kn - hp) * life))
+		_set_bone_pose(iu, _q(hp, 0.0, hr))
+		_set_bone_pose(iu + 1, _q(-kn))
+		_set_bone_pose(iu + 2, _q(0.6 * (kn - hp) * life))
 	# ---- quadril e torso
 	var bob := 0.025 * _mv * absf(sin(_phase))
 	var hip_y := -drop - bob
@@ -213,11 +213,11 @@ func update(dt: float) -> void:
 	if _act == "interact":
 		interact_bow = 14.0 * sin(PI * act_p)
 	var hips_pitch := 86.0 * _death
-	_set(B.HIPS, _q(hips_pitch, 0.0, sway))
-	_set(B.SPINE, _q(-lean * 0.5 - interact_bow * 0.5 + 6.0 * hit_t - 8.0 * _vic + p_deg * 0.15, twist * 0.5, -sway * 0.5))
-	_set(B.CHEST, _q(-lean * 0.5 - interact_bow * 0.5 + p_deg * 0.40 + breathe + 5.0 * hit_t - 6.0 * _recoil, twist * 0.5, 0.0))
-	_set(B.NECK, _q(p_deg * 0.15 + 2.0 * lean * 0.1, -twist * 0.4 + head_yaw * 0.4))
-	_set(B.HEAD, _q(p_deg * 0.25 + head_pit + 6.0 * hit_t - 8.0 * _vic, -twist * 0.4 + head_yaw * 0.6))
+	_set_bone_pose(B.HIPS, _q(hips_pitch, 0.0, sway))
+	_set_bone_pose(B.SPINE, _q(-lean * 0.5 - interact_bow * 0.5 + 6.0 * hit_t - 8.0 * _vic + p_deg * 0.15, twist * 0.5, -sway * 0.5))
+	_set_bone_pose(B.CHEST, _q(-lean * 0.5 - interact_bow * 0.5 + p_deg * 0.40 + breathe + 5.0 * hit_t - 6.0 * _recoil, twist * 0.5, 0.0))
+	_set_bone_pose(B.NECK, _q(p_deg * 0.15 + 2.0 * lean * 0.1, -twist * 0.4 + head_yaw * 0.4))
+	_set_bone_pose(B.HEAD, _q(p_deg * 0.25 + head_pit + 6.0 * hit_t - 8.0 * _vic, -twist * 0.4 + head_yaw * 0.6))
 	# ---- braços livres (sem arma) e IK quando armado
 	var arm_amp := lerpf(16.0, 42.0, _run) * _mv
 	var elbow := 10.0 + (14.0 + 40.0 * _run) * _mv + 14.0 * _crouch
@@ -244,10 +244,10 @@ func update(dt: float) -> void:
 	var elb_v := elbow * (1.0 - _vic) + 20.0 * _vic
 	el_l = _q(elb_v + 12.0 * hit_t)
 	el_r = _q(elb_v + 12.0 * hit_t)
-	_set(B.UARM_L, fl)
-	_set(B.UARM_R, fr)
-	_set(B.LARM_L, el_l)
-	_set(B.LARM_R, el_r)
+	_set_bone_pose(B.UARM_L, fl)
+	_set_bone_pose(B.UARM_R, fr)
+	_set_bone_pose(B.LARM_L, el_l)
+	_set_bone_pose(B.LARM_R, el_r)
 	if weapon_root != null and weapon_kind != "" and _armed > 0.01:
 		_hold_weapon(act_p, fl, fr, el_l, el_r)
 
@@ -326,5 +326,5 @@ func _solve_arm(side: int, target: Vector3, w: float, free_u: Quaternion, free_l
 	var pq := chest_g.basis.get_rotation_quaternion()
 	var qu_l := pq.inverse() * qu_g
 	var ql_l := qu_g.inverse() * ql_g
-	_set(iu, free_u.slerp(qu_l, w))
-	_set(iu + 1, free_l.slerp(ql_l, w))
+	_set_bone_pose(iu, free_u.slerp(qu_l, w))
+	_set_bone_pose(iu + 1, free_l.slerp(ql_l, w))
