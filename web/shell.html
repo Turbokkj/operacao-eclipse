@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, viewport-fit=cover">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>$GODOT_PROJECT_NAME</title>
+<style>
+html, body, #canvas { margin: 0; padding: 0; border: 0; width: 100%; height: 100%; overflow: hidden; background: #050709; touch-action: none; }
+body { color: #f0f3fa; font-family: "Segoe UI", Roboto, Arial, sans-serif; -webkit-user-select: none; user-select: none; }
+#canvas { display: block; outline: none; }
+#status { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  background: radial-gradient(ellipse at 70% 30%, #3a1608 0%, #0a0a12 55%, #050709 100%); transition: opacity .5s; z-index: 5; }
+#status.hidden { opacity: 0; pointer-events: none; }
+#logo { width: min(70vw, 420px); margin-bottom: 18px; }
+#title { font-size: clamp(22px, 5vw, 38px); font-weight: 800; letter-spacing: .12em; color: #ffb066; }
+#sub { font-size: clamp(11px, 2.4vw, 15px); letter-spacing: .5em; color: #9aa4b8; margin-bottom: 28px; }
+#bar { width: min(78vw, 520px); height: 10px; background: #1a1f2b; border-radius: 6px; overflow: hidden; border: 1px solid #2c3446; }
+#fill { height: 100%; width: 0%; background: linear-gradient(90deg, #ff7a18, #ffb347); transition: width .15s; }
+#msg { margin-top: 12px; font-size: 14px; color: #c7cfdf; min-height: 20px; text-align: center; padding: 0 16px; }
+#err { display: none; margin-top: 16px; max-width: min(86vw, 560px); padding: 14px 16px; border: 1px solid #a33; background: #240d0d; border-radius: 10px; color: #ffb4b4; font-size: 14px; line-height: 1.45; }
+#err b { color: #fff; }
+#rotate { display: none; position: absolute; inset: 0; z-index: 9; background: #050709ee; align-items: center; justify-content: center; text-align: center; font-size: 18px; padding: 24px; }
+@media (orientation: portrait) and (pointer: coarse) { #rotate { display: flex; } }
+</style>
+$GODOT_HEAD_INCLUDE
+</head>
+<body>
+<canvas id="canvas" tabindex="0">Seu navegador não suporta HTML5 canvas.</canvas>
+<div id="rotate">Gire o aparelho para o modo horizontal para jogar.</div>
+<div id="status">
+  <svg id="logo" viewBox="0 0 420 150" xmlns="http://www.w3.org/2000/svg">
+    <defs><radialGradient id="g" cx="50%" cy="50%" r="50%"><stop offset="70%" stop-color="#000"/><stop offset="86%" stop-color="#ff8a2a"/><stop offset="100%" stop-color="#ff8a2a00"/></radialGradient></defs>
+    <circle cx="210" cy="75" r="62" fill="url(#g)"/><circle cx="210" cy="75" r="42" fill="#020204"/>
+  </svg>
+  <div id="title">OPERAÇÃO ECLIPSE</div>
+  <div id="sub">BATTLE ROYALE</div>
+  <div id="bar"><div id="fill"></div></div>
+  <div id="msg">Preparando…</div>
+  <div id="err"></div>
+</div>
+<script src="$GODOT_URL"></script>
+<script>
+const GODOT_CONFIG = $GODOT_CONFIG;
+const GODOT_THREADS_ENABLED = $GODOT_THREADS_ENABLED;
+const engine = new Engine(GODOT_CONFIG);
+(function () {
+  const status = document.getElementById('status');
+  const fill = document.getElementById('fill');
+  const msg = document.getElementById('msg');
+  const err = document.getElementById('err');
+  function showError(html) { err.innerHTML = html; err.style.display = 'block'; fill.style.background = '#c33'; msg.textContent = 'Não foi possível iniciar o jogo.'; }
+  document.addEventListener('contextmenu', e => e.preventDefault());
+  const missing = Engine.getMissingFeatures({ threads: GODOT_THREADS_ENABLED });
+  if (missing.length !== 0) {
+    showError('<b>Seu navegador não tem recursos necessários:</b><br>' + missing.join('<br>') + '<br><br>Use um navegador atualizado com WebGL 2.0 (Chrome, Edge, Firefox ou Safari recente).');
+    return;
+  }
+  const t0 = performance.now();
+  engine.startGame({
+    onProgress: function (current, total) {
+      if (total > 0) {
+        const p = Math.min(100, Math.round(current / total * 100));
+        fill.style.width = p + '%';
+        msg.textContent = 'Baixando recursos do jogo… ' + p + '% (' + (current / 1048576).toFixed(1) + ' / ' + (total / 1048576).toFixed(1) + ' MB)';
+      } else {
+        msg.textContent = 'Baixando recursos do jogo… ' + (current / 1048576).toFixed(1) + ' MB';
+      }
+    },
+    onPrint: function () { console.log.apply(console, arguments); },
+    onPrintError: function () { console.error.apply(console, arguments); },
+  }).then(function () {
+    msg.textContent = 'Inicializando o motor…';
+    status.classList.add('hidden');
+  }, function (e) {
+    console.error(e);
+    showError('<b>Erro ao carregar:</b> ' + (e && e.message ? e.message : e) + '<br>Verifique a conexão e recarregue a página. Se abriu o arquivo direto do disco, use <code>tools/serve.py</code>.');
+  });
+  // quando o Godot terminar o carregamento interno, a barra do próprio jogo assume
+  window.addEventListener('keydown', e => { if (['Space','ArrowUp','ArrowDown','Tab'].includes(e.code)) e.preventDefault(); }, { capture: true });
+})();
+</script>
+</body>
+</html>
