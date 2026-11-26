@@ -5,11 +5,16 @@ set -euo pipefail
 V="${GODOT_VERSION:-4.3}"
 BASE="https://github.com/godotengine/godot/releases/download/${V}-stable"
 cd "$(dirname "$0")/.."
-# Recursos de áudio e texturas são gerados localmente no build; não armazenamos blobs binários no repositório.
-python3 -m pip install --quiet --disable-pip-version-check numpy pillow
-python3 tools/gen_audio.py
-python3 tools/gen_textures.py
 BIN=".godot-bin"; mkdir -p "$BIN"
+# A imagem de build da Vercel usa PEP 668; instale as dependências em um venv do próprio projeto.
+PYENV="$BIN/venv"
+if [ ! -x "$PYENV/bin/python" ]; then python3 -m venv "$PYENV"; fi
+PY="$PYENV/bin/python"
+"$PY" -m pip install --quiet --disable-pip-version-check --upgrade pip
+"$PY" -m pip install --quiet --disable-pip-version-check numpy pillow
+# Recursos de áudio e texturas são gerados localmente no build; não armazenamos blobs binários no repositório.
+"$PY" tools/gen_audio.py
+"$PY" tools/gen_textures.py
 if [ ! -x "$BIN/godot" ]; then
   curl -fsSL -o "$BIN/godot.zip" "$BASE/Godot_v${V}-stable_linux.x86_64.zip"
   python3 - "$BIN" "$V" <<'PY'
