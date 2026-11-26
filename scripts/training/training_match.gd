@@ -99,7 +99,7 @@ func _arena() -> void:
 		b.box("concrete", Vector3(w[0], 1.5, w[1]), Vector3(1, 3, 180), Color(0.45, 0.47, 0.5), true, false, 3.0)
 	# faixas e marcadores da pista de tiro (distâncias a partir do ponto de partida em z = 46)
 	for d in [20, 35, 55, 75]:
-		var z := 46.0 - d
+		var z: float = 46.0 - float(d)
 		b.box("plain", Vector3(0, 0.02, z + 3.0), Vector3(30, 0.03, 0.4), Color(1.0, 0.8, 0.2), false, false, 1.0)
 		b.box("metal", Vector3(-16, 0.6, z + 3.0), Vector3(0.5, 1.2, 0.5), Color(0.9, 0.5, 0.1), true, false, 1.0)
 		var lb := Label3D.new()
