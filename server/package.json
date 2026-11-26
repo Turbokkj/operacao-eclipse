@@ -1,0 +1,9 @@
+{
+  "name": "operacao-eclipse-server",
+  "version": "1.0.0",
+  "description": "Matchmaking, salas e relay WebSocket da Operação Eclipse (sem dependências)",
+  "main": "server.js",
+  "scripts": { "start": "node server.js", "test": "node test.js" },
+  "engines": { "node": ">=18" },
+  "license": "UNLICENSED"
+}
