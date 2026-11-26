@@ -38,7 +38,9 @@ PY
   rm -f "$BIN/tpl.tpz"
 fi
 if [ -n "${GAME_SERVER_URL:-}" ]; then printf '%s\n' "$GAME_SERVER_URL" > server_url.txt; fi
-"$BIN/godot" --headless --path . --import 2>&1 | tail -40 || true
+"$BIN/godot" --headless --path . --import 2>&1 | tee "$BIN/import.log" | tail -60
+echo "Executando smoke test do modo clássico..."
+"$BIN/godot" --headless --path . --script res://tools/smoke_classic.gd 2>&1 | tee "$BIN/smoke.log" | tail -100
 mkdir -p build/web
 "$BIN/godot" --headless --path . --export-release "Web" build/web/index.html 2>&1 | tail -60
 test -f build/web/index.html || { echo "ERRO: a exportação não gerou build/web/index.html (veja os erros acima)"; exit 1; }
