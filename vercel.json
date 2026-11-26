@@ -1,0 +1,7 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": null,
+  "installCommand": "echo no-npm-dependencies",
+  "buildCommand": "bash vercel-build.sh",
+  "outputDirectory": "operacao-eclipse/build/web"
+}
