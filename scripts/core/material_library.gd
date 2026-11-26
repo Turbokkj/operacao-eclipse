@@ -1,7 +1,7 @@
 class_name MaterialLibrary
 extends RefCounted
 ## Materiais PBR otimizados (StandardMaterial3D) com texturas albedo geradas por tools/gen_textures.py.
-## As texturas são carregadas em tempo de execução a partir de arquivos .tex (PNG) — sem depender do
+## As texturas são carregadas em tempo de execução a partir de arquivos .bin (PNG) — sem depender do
 ## pipeline de importação do editor — e recebem mipmaps. Se um arquivo faltar, usa cor sólida.
 
 const TEX_DIR := "res://assets/textures/"
@@ -29,7 +29,7 @@ static func get_texture(tname: String) -> Texture2D:
 		var cached: Variant = _tex_cache[tname]
 		if cached != null and is_instance_valid(cached):
 			return cached
-	var path := TEX_DIR + tname + ".tex"
+	var path := TEX_DIR + tname + ".bin"
 	var tex: Texture2D = null
 	if FileAccess.file_exists(path):
 		var f := FileAccess.open(path, FileAccess.READ)
@@ -57,7 +57,7 @@ static func get_mat(key: String) -> StandardMaterial3D:
 	var t := get_texture(str(d["tex"]))
 	if t != null:
 		m.albedo_texture = t
-		m.texture_filter = BaseMaterial3D.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
+		m.binture_filter = BaseMaterial3D.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
 	m.cull_mode = BaseMaterial3D.CULL_BACK
 	_mat_cache[key] = m
 	return m
