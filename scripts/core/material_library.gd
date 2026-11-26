@@ -57,7 +57,7 @@ static func get_mat(key: String) -> StandardMaterial3D:
 	var t := get_texture(str(d["tex"]))
 	if t != null:
 		m.albedo_texture = t
-		m.binture_filter = BaseMaterial3D.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
+		m.texture_filter = BaseMaterial3D.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
 	m.cull_mode = BaseMaterial3D.CULL_BACK
 	_mat_cache[key] = m
 	return m
