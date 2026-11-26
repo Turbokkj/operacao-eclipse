@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: operacao-eclipse-server
+    runtime: node
+    rootDir: server
+    buildCommand: echo sem-build
+    startCommand: node server.js
+    healthCheckPath: /health
+    plan: free

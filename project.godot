@@ -1,0 +1,50 @@
+; Engine configuration file.
+; Operação Eclipse: Battle Royale — Godot 4.3+ (renderizador Compatibility / WebGL 2.0)
+
+config_version=5
+
+[application]
+
+config/name="Operação Eclipse: Battle Royale"
+config/description="Battle royale 3D offline para navegador (Godot 4 + WebAssembly)."
+run/main_scene="res://scenes/boot.tscn"
+config/features=PackedStringArray("4.3", "GL Compatibility")
+run/max_fps=60
+config/icon="res://icon.svg"
+
+[autoload]
+
+Events="*res://scripts/core/events.gd"
+SaveSystem="*res://scripts/save/save_system.gd"
+GameSettings="*res://scripts/core/settings_manager.gd"
+AudioManager="*res://scripts/core/audio_manager.gd"
+QualityManager="*res://scripts/core/quality_manager.gd"
+SceneRouter="*res://scripts/core/scene_router.gd"
+NetClient="*res://scripts/net/net_client.gd"
+
+[display]
+
+window/size/viewport_width=1280
+window/size/viewport_height=720
+window/stretch/mode="canvas_items"
+window/stretch/aspect="expand"
+window/handheld/orientation=4
+
+[input_devices]
+
+pointing/emulate_touch_from_mouse=false
+pointing/emulate_mouse_from_touch=true
+
+[physics]
+
+common/physics_ticks_per_second=60
+3d/default_gravity=20.0
+
+[rendering]
+
+renderer/rendering_method="gl_compatibility"
+renderer/rendering_method.mobile="gl_compatibility"
+textures/vram_compression/import_etc2_astc=true
+environment/defaults/default_clear_color=Color(0.04, 0.05, 0.08, 1)
+lights_and_shadows/directional_shadow/size=2048
+lights_and_shadows/directional_shadow/soft_shadow_filter_quality=1

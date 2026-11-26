@@ -1,0 +1,2 @@
+# URL do servidor de partidas (wss://seu-servidor.exemplo.com). Linhas com # são ignoradas.
+# Em produção (Vercel) o script tools/vercel_build.sh preenche este arquivo com a variável GAME_SERVER_URL.
