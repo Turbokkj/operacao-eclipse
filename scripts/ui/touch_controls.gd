@@ -229,7 +229,7 @@ func _draw() -> void:
 	for id in DEFAULTS:
 		var c := _center_of(id)
 		var r := _radius_of(id)
-		var on := _pressed.has(id) or (id == "aim" and GameSettings.t_aim) or (id == "crouch" and GameSettings.t_crouch) \
+		var on: bool = _pressed.has(id) or (id == "aim" and GameSettings.t_aim) or (id == "crouch" and GameSettings.t_crouch) \
 			or (id == "sprint" and GameSettings.t_sprint)
 		var col := Color(1.0, 0.55, 0.14, op * (1.0 if on else 0.6)) if id == "fire" else Color(0.9, 0.93, 1.0, op * (0.85 if on else 0.35))
 		if id == "interact" and not prompt_active and not editing:
